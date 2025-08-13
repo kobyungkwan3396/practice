@@ -57,10 +57,11 @@ INSERT INTO Menu (name, price, category) VALUES
 -- 고객 데이터 삽입
 INSERT INTO Customer (name, phone, email, address, birth_date, gender, preferred_menu) VALUES
 ('김병관', '010-1234-5678', 'bk.kim@example.com', '경기도 하남시', '1995-03-12', 'M', '직화구이젤라또'),
-('이지은', '010-4725-2146', 'jieun.lee@example.com', '서울시 강남구', '1993-07-22', 'F', '봉골레파스타'),
+('이지은', '010-9876-5432', 'jieun.lee@example.com', '서울시 강남구', '1993-07-22', 'F', '봉골레파스타'),
 ('박판수', '010-9326-6587', 'pansoo@example.com', '서울시 논현동', '1999-09-22', 'M', '죽방멸치튀김'),
 ('오인제', '010-9126-1689', 'injae@example.com', '서울시 송파구', '1993-08-24', 'M', '봉골레파스타'),
 ('김민서', '010-9576-4578', 'minseo@example.com', '서울시 강남구', '1993-07-27', 'F', '직화구이젤라또');
+
 
 -- 주문 예시 삽입
 INSERT INTO `Order` (customer_id, menu_id, quantity, total_amount, payment_method, is_delivery, staff_id)
