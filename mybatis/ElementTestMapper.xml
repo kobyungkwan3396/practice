@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ohgiraffers.section01.xmlmapper.ElementTestMapper">
+
+    <resultMap id="menuResultMap1" type="com.ohgiraffers.common.MenuDTO" autoMapping="false">
+        <id property="code" column="MENU_CODE"/>
+        <result property="name" column="MENU_NAME"/>
+        <result property="price" column="MENU_PRICE"/>
+        <result property="categoryCode" column="CATEGORY_CODE"/>
+    </resultMap>
+
+    <resultMap id="menuResultMap2" type="com.ohgiraffers.common.MenuDTO" extends="menuResultMap1">
+        <result property="orderableStatus" column="ORDERABLE_STATUS"/>
+    </resultMap>
+
+    <select id="selectResultMapTest" resultMap="menuResultMap2">
+        select
+             menu_code
+            , menu_name
+            , menu_price
+            , category_code
+            , orderable_status
+          from tbl_menu
+        where orderable_status = 'y'
+    </select>
+
+    <resultMap id="menuResultMap3" type="com.ohgiraffers.common.MenuDTO">
+        <constructor>
+            <idArg column="MENU_CODE" javaType="_int"/>
+            <arg column="MENU_NAME" javaType="string"/>
+            <arg column="MENU_PRICE" javaType="_int"/>
+            <arg column="CATEGORY_CODE" javaType="_int"/>
+            <arg column="ORDERABLE_STATUS" javaType="string"/>
+        </constructor>
+    </resultMap>
+
+    <select id="selectResultMapConstructorTest" resultMap="menuResultMap3">
+        select
+        menu_code
+        , menu_name
+        , menu_price
+        , category_code
+        , orderable_status
+        from tbl_menu
+        where orderable_status = 'y'
+    </select>
+
+<!--    <resultMap id="menuAndCategoryResultMap" type="com.ohgiraffers.common.MenuAndCategoryDTO">-->
+<!--        <id property="code" column="MENU_CODE"/>-->
+<!--        <result property="name" column="MENU_NAME"/>-->
+<!--        <result property="price" column="MENU_PRICE"/>-->
+<!--        <result property="orderableStatus" column="ORDERABLE_STATUS"/>-->
+<!--        <association property="category" resultMap="categoryResultMap"/>-->
+<!--    </resultMap>-->
+
+<!--    <resultMap id="categoryResultMap" type="com.ohgiraffers.common.CategoryDTO">-->
+<!--        <id property="code" column="CATEGORY_CODE"/>-->
+<!--        <result property="name" column="CATEGORY_NAME"/>-->
+<!--        <result property="refCategoryCode" column="REF_CATEGORY_CODE"/>-->
+<!--    </resultMap>-->
+
+    <resultMap id="menuAndCategoryResultMap" type="com.ohgiraffers.common.MenuAndCategoryDTO">
+       <id property= "code" column="MENU_CODE"/>
+        <result property="name" column="MENU_NAME"/>
+        <result property="price" column="MENU_PRICE"/>
+        <result property="orderableStatus" column="ORDERABLE_STATUS"/>
+        <association property="category" javaType="com.ohgiraffers.common.CategoryDTO">
+                   <id property="code" column="CATEGORY_CODE"/>
+                   <result property="name" column="CATEGORY_NAME"/>
+                   <result property="refCategoryCode" column="REF_CATEGORY_CODE"/>
+        </association>
+    </resultMap>
+
+
+    <select id="selectResultMapAssociationTest" resultMap="menuAndCategoryResultMap">
+        select
+             a.menu_code
+           , a.menu_name
+           , a.menu_price
+           , b.category_code
+           , b.category_name
+           , b.ref_category_code
+           , a.orderable_status
+        from tbl_menu a
+        join tbl_category b on (a.category_code = b.category_code)
+        where a.orderable_status = 'y'
+    </select>
+
+<!--    <resultMap id="categoryAndMenuResultMap" type="com.ohgiraffers.common.CategoryAndMenuDTO">-->
+<!--    <id property="code" column="CATEGORY_CODE"/>-->
+<!--    <result property="name" column="CATEGORY_NAME"/>-->
+<!--    <result property="refCategoryCode" column="REF_CATEGORY_CODE"/>-->
+<!--    <collection property="menuList" resultMap="menuResultMap"/>-->
+<!--    </resultMap>-->
+
+<!--  <resultMap id="menuResultMap" type="com.ohgiraffers.common.MenuDTO">-->
+<!--  <id property= "code" column="MENU_CODE"/>-->
+<!--  <result property="name" column="MENU_NAME"/>-->
+<!--  <result property="price" column="MENU_PRICE"/>-->
+<!--  <result property="categoryCode" column="CATEGORY_CODE"/>-->
+<!--  <result property="orderableStatus" column="ORDERABLE_STATUS"/>-->
+<!--  </resultMap>-->
+
+    <resultMap id="categoryAndMenuResultMap" type="com.ohgiraffers.common.CategoryAndMenuDTO">
+    <id property="code" column="CATEGORY_CODE"/>
+    <result property="name" column="CATEGORY_NAME"/>
+    <result property="refCategoryCode" column="REF_CATEGORY_CODE"/>
+    <collection property="menuList" ofType="com.ohgiraffers.common.MenuDTO">
+    <id property= "code" column="MENU_CODE"/>
+    <result property="name" column="MENU_NAME"/>
+    <result property="price" column="MENU_PRICE"/>
+    <result property="categoryCode" column="CATEGORY_CODE"/>
+    <result property="orderableStatus" column="ORDERABLE_STATUS"/>
+    </collection>
+    </resultMap>
+
+
+<select id="selectResultMapCollectionTest" resultMap="categoryAndMenuResultMap">
+    select
+          a.category_code
+        , a.category_name
+        , a.ref_category_code
+        , b.menu_code
+        , b.menu_name
+        , b.menu_price
+        , b.category_code
+        , b.orderable_Status
+      from tbl_category a
+      left join tbl_menu b on (a.category_code = b.category_code)
+    order by a.category_code
+
+</select>
+
+    <sql id="columns">
+        menu_code
+      , menu_name
+      , menu_price
+      , category_code
+      , orderable_status
+    </sql>
+
+    <select id="selectSqlTest" resultMap="menuResultMap2">
+        select
+        <include refid="columns"/>
+        from tbl_menu
+        where orderable_status = 'y'
+    </select>
+</mapper>
