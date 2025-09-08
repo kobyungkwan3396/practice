@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div th:include="common/header.html"></div>
+<h3> 메뉴 삭제</h3>
+    <form action="/menu/delete" method="post">
+        <label>삭제할 메뉴 이름 : </label>
+        <select id="menuCode" name="code"></select><br>
+        <input type="submit" value="전송">
+    </form>
+<script>
+    fetch("/menu/menuSelect")
+        .then(res => res.json())
+        .then(data => {
+            console.log(data);
+
+            const $categoryCode = document.getElementById('menuCode');
+
+            for(let index in data) {
+                const $option = document.createElement('option');
+                $option.value = data[index].code;
+                $option.textContent = data[index].name;
+                $categoryCode.appendChild($option);
+            }
+        });
+</script>
+<script>
+    fetch("/menu/category")
+        .then(res => res.json())
+        .then(data => {
+            console.log(data);
+
+            const $categoryCode = document.getElementById('categoryCode');
+
+            for(let index in data) {
+                const $option = document.createElement('option');
+                $option.value = data[index].code;
+                $option.textContent = data[index].name;
+                $categoryCode.appendChild($option);
+            }
+        });
+</script>
+</body>
+</html>
