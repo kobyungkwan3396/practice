@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script>
+        // const successMessage = `[[${ successMessage }]]`
+        // if(successMessage) {
+        //     alert(successMessage);
+        // }
+    </script>
+</head>
+<body>
+     <table align="center" border="1">
+         <tr>
+             <th>회원번호</th>
+             <th>아이디</th>
+             <th>비밀번호</th>
+             <th>이메일</th>
+             <th>회원명</th>
+             <th>전화번호</th>
+             <th>주소</th>
+             <th>메세지 알림 상태 (Y/N)</th>
+             <th>사용자구분</th>
+         </tr>
+         <tr th:each="member :  ${memberList}">
+             <td th:text="${ member.num }"></td>
+             <td th:text="${ member.id }"></td>
+             <td th:text="${ member.pw }"></td>
+             <td th:text="${ member.email }"></td>
+             <td th:text="${ member.nm }"></td>
+             <td th:text="${ member.pum }"></td>
+             <td th:text="${ member.address }"></td>
+             <td th:text="${ member.msgNotiStatus }"></td>
+             <td th:text="${ member.typ }"></td>
+         </tr>
+     </table>
+
+</body>
+</html>
