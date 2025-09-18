@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>마이페이지</title>
+</head>
+<body>
+<h1>마이페이지</h1>
+
+<!-- 로그인한 사용자 정보 출력 -->
+<h2>내 정보</h2>
+<ul>
+    <li>아이디: <span th:text="${loginMember.id}"></span></li>
+    <li>이름: <span th:text="${loginMember.nm}"></span></li>
+    <li>이메일: <span th:text="${loginMember.email}"></span></li>
+    <li>전화번호: <span th:text="${loginMember.phoneNum}"></span></li>
+    <li>주소: <span th:text="${loginMember.address}"></span></li>
+    <li>메시지 알림 상태: <span th:text="${loginMember.msgNotiStatus}"></span></li>
+</ul>
+
+<!-- 수정 폼 -->
+<h2>내 정보 수정</h2>
+<form th:action="@{/member/MemberUpdate}" method="post">
+    <input type="hidden" name="memberNum" th:value="${loginMember.memberNum}" />
+    <input type="hidden" name="id" th:value="${loginMember.id}" /> <!-- ✅ 추가 -->
+    <label>이름: </label><input type="text" name="nm" th:value="${loginMember.nm}" /><br>
+    <label>이메일: </label><input type="text" name="email" th:value="${loginMember.email}" /><br>
+    <label>전화번호: </label><input type="text" name="phoneNum" th:value="${loginMember.phoneNum}" /><br>
+    <label>주소: </label><input type="text" name="address" th:value="${loginMember.address}" /><br>
+    <label>메시지 알림 상태: </label><input type="text" name="msgNotiStatus" th:value="${loginMember.msgNotiStatus}" /><br>
+    <button type="submit">수정</button>
+</form>
+
+<!-- 삭제 폼 -->
+<h2>회원 탈퇴</h2>
+<form th:action="@{/member/MemberDelete}" method="post">
+    <input type="hidden" name="memberNum" th:value="${loginMember.memberNum}" />
+    <button type="submit" onclick="return confirm('정말 탈퇴하시겠습니까?')">삭제</button>
+</form>
+
+</body>
+</html>
