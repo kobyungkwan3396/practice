@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>회원가입 - HulahoopBlue</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: #3f2b4e;
+        }
+
+        .chat-container {
+            width: 680px;
+            height: 680px;
+            background-color: #1f1e31;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .chat-header {
+            padding: 20px;
+            background: #1f1e31;
+            color: white;
+            font-size: 22px;
+            font-weight: 600;
+            text-align: center;
+            border-radius: 16px 16px 0 0;
+        }
+
+        .chat-body {
+            flex: 1;
+            padding: 40px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .signup-form {
+            width: 100%;
+            max-width: 500px;
+            max-height: 500px;
+            background: #25293f;
+            padding: 30px;
+            border-radius: 16px;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+        }
+
+        .signup-form h2 {
+            color: #fff;
+            margin-bottom: 25px;
+            font-size: 28px;
+            font-weight: 600;
+        }
+
+        .input-group {
+            position: relative;
+            margin-bottom: 30px;
+            display: flex;
+            align-items: center;
+        }
+
+        /* 모든 input 기본 스타일 */
+        .input-group input {
+            flex: 1;
+            border: none;
+            border-bottom: 2px solid #555;
+            background: transparent;
+            padding: 8px 10px;
+            font-size: 16px;
+            color: #fff;
+        }
+
+        .input-group input::placeholder {
+            color: rgba(255,255,255,0.5);
+        }
+
+        .input-group input:focus {
+            outline: none;
+            border-bottom-color: #5E0F7B;
+        }
+
+        /* 브라우저 자동완성 색상 강제 흰색 */
+        input:-webkit-autofill,
+        input:-webkit-autofill:hover,
+        input:-webkit-autofill:focus,
+        input:-webkit-autofill:active {
+            -webkit-box-shadow: 0 0 0px 1000px #25293f inset !important;
+            -webkit-text-fill-color: #fff !important;
+        }
+
+        .input-group button {
+            margin-left: 10px;
+            padding: 6px 12px;
+            font-size: 12px;
+            border: none;
+            border-radius: 6px;
+            background-color: #5E0F7B;
+            color: #fff;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .input-group button:hover {
+            opacity: 0.85;
+        }
+
+        .id-check-group {
+            position: relative;
+        }
+
+        .check-result {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            font-size: 12px;
+            color: red;
+            margin-top: 2px;
+            white-space: nowrap;
+        }
+
+        .checkbox-row {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 10px;
+            font-size: 14px;
+            color: #fff;
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            font-size: 14px;
+            color: #fff;
+        }
+
+        .checkbox-group input {
+            margin-right: 8px;
+        }
+
+        .signup-btn {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(90deg, #5E0F7B, #4269E2);
+            border: none;
+            border-radius: 8px;
+            color: #fff;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            margin-top: 15px;
+        }
+
+        .signup-btn:hover {
+            opacity: 0.9;
+            transform: translateY(-2px);
+        }
+
+        @media (max-width: 700px) {
+            .chat-container {
+                width: 90%;
+                height: auto;
+            }
+        }
+        .modal {
+            display: none; /* 처음엔 숨겨진 상태 */
+            position: fixed;
+            z-index: 999;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.5); /* 배경 어두운 반투명 */
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background-color: #1f1e31;
+            margin: auto;
+            padding: 20px;
+            border-radius: 10px;
+            width: 90%;
+            max-width: 600px;
+            color: white;
+            box-shadow: 0 6px 30px rgba(0,0,0,0.4);
+        }
+
+        .modal-content h3 {
+            margin-bottom: 10px;
+        }
+
+        .modal-content input {
+            padding: 8px;
+            width: calc(100% - 100px);
+            margin-bottom: 10px;
+            border: none;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+
+        .modal-content button {
+            padding: 8px 12px;
+            margin-left: 6px;
+            background-color: #5E0F7B;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        #resultTable {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+            color: white;
+        }
+
+        #resultTable th,
+        #resultTable td {
+            border: 1px solid #555;
+            padding: 8px;
+            text-align: center;
+        }
+
+        #resultTable th {
+            background-color: #333;
+        }
+
+        .custom-scroll{
+            /* Firefox */
+            scrollbar-width: none;
+            scrollbar-color: rgba(255, 255, 255, 0.7) rgba(255, 255, 255, 0.001);
+        }
+    </style>
+</head>
+<body>
+<div class="chat-container custom-scroll">
+    <div class="chat-header">HulahoopBlue</div>
+    <div class="chat-body">
+        <form action="/member/MemberInsert" method="post" class="signup-form">
+            <h2>회원가입</h2>
+
+            <div class="input-group id-check-group">
+                <input type="text" name="id" id="idInput" placeholder="아이디 입력" required autocomplete="off" spellcheck="false">
+                <button type="button" onclick="checkDuplicate()">중복확인</button>
+                <div id="checkResult" class="check-result"></div>
+            </div>
+
+            <div class="input-group">
+                <input type="password" name="pw" id="pwInput" placeholder="비밀번호 입력" required autocomplete="new-password" spellcheck="false">
+            </div>
+
+            <div class="input-group">
+                <input type="password" id="pwConfirmInput" placeholder="비밀번호 확인" required autocomplete="new-password" spellcheck="false">
+                <div id="pwCheckResult" class="check-result"></div>
+            </div>
+
+            <div class="input-group">
+                <input type="email" name="email" placeholder="이메일 입력" required autocomplete="off" spellcheck="false">
+            </div>
+
+            <div class="input-group">
+                <input type="text" name="nm" placeholder="이름 입력" required autocomplete="off" spellcheck="false">
+            </div>
+
+            <div class="input-group">
+                <input type="tel" name="phoneNum" placeholder="전화번호 입력" required autocomplete="off" spellcheck="false">
+            </div>
+
+            <div class="input-group">
+                <input type="text" name="address" id="mainAddress" placeholder="주소를 선택하세요" readonly required autocomplete="off" spellcheck="false">
+                <button type="button" onclick="openSearchModal()">검색</button>
+            </div>
+
+            <div class="checkbox-row">
+                <div class="checkbox-group">
+                    <input type="checkbox" id="terms" required onclick = "showPrivacyPopup()">
+                    <label for="terms">개인정보수집 동의 (필수)</label>
+                </div>
+                <div class="checkbox-group">
+                    <input type="checkbox" id="agreement" required onclick = "showAgreementPopup()">
+                    <label for="agreement">이용약관 동의 (필수)</label>
+                </div>
+            </div>
+
+            <div class="checkbox-group">
+                <input type="checkbox" id="alert">
+                <label for="alert">알림 상태 동의 (선택)</label>
+            </div>
+
+            <button type="submit" class="signup-btn">회원가입</button>
+        </form>
+    </div>
+</div>
+
+<!-- 주소 검색 모달 -->
+<div id="addressModal" class="modal">
+    <div class="modal-content">
+        <h3>주소 검색</h3>
+        <input type="text" id="modalKeyword" placeholder="검색어 입력">
+        <button onclick="searchAddress()">검색</button>
+        <button onclick="closeSearchModal()">닫기</button>
+
+        <table id="resultTable">
+            <thead>
+            <tr>
+                <th>주소</th>
+                <th>선택</th>
+            </tr>
+            </thead>
+            <tbody>
+            <!-- 검색 결과 -->
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- ✅ Thymeleaf가 JS 안에서 변수 치환할 수 있도록 설정 -->
+<script th:inline="javascript">
+    const apiKey = /*[[${apiKey}]]*/ "";
+    const apiUrl = /*[[${apiUrl}]]*/ "";
+
+    function openSearchModal() {
+        document.getElementById("addressModal").style.display = "block";
+        document.getElementById("modalKeyword").value = "";
+        clearTable();
+    }
+
+    function closeSearchModal() {
+        document.getElementById("addressModal").style.display = "none";
+    }
+
+    function clearTable() {
+        const tbody = document.querySelector("#resultTable tbody");
+        tbody.innerHTML = "";
+    }
+
+    async function searchAddress() {
+        const keyword = document.getElementById("modalKeyword").value.trim();
+        if (!keyword) {
+            alert("검색어를 입력하세요.");
+            return;
+        }
+
+        const params = new URLSearchParams({
+            confmKey: apiKey,
+            currentPage: 1,
+            countPerPage: 10,
+            keyword: keyword,
+            resultType: "json"
+        });
+
+        try {
+            const res = await fetch(`${apiUrl}?${params.toString()}`);
+            const data = await res.json();
+
+            const results = data.results.juso || [];
+            renderTable(results);
+        } catch (err) {
+            console.error(err);
+            alert("주소 검색 중 오류가 발생했습니다.");
+        }
+    }
+
+    function renderTable(addressList) {
+        clearTable();
+        const tbody = document.querySelector("#resultTable tbody");
+        if (addressList.length === 0) {
+            const tr = document.createElement("tr");
+            tr.innerHTML = `<td colspan="2">검색 결과가 없습니다.</td>`;
+            tbody.appendChild(tr);
+            return;
+        }
+
+        addressList.forEach(addr => {
+            const tr = document.createElement("tr");
+            tr.innerHTML = `
+                <td>${addr.roadAddr}</td>
+                <td><button type="button" onclick="selectAddress('${addr.roadAddr}')">선택</button></td>
+            `;
+            tbody.appendChild(tr);
+        });
+    }
+
+    function selectAddress(address) {
+        document.getElementById("mainAddress").value = address;
+        closeSearchModal();
+    }
+</script>
+
+<!-- 아이디 중복 확인 + 비밀번호 확인 -->
+<script>
+    function checkDuplicate() {
+        const id = document.getElementById('idInput').value;
+        const resultDiv = document.getElementById('checkResult');
+
+        if (!id) {
+            resultDiv.textContent = "아이디를 입력해주세요.";
+            resultDiv.style.color = "orange";
+            return;
+        }
+
+        fetch(`/member/checkId?id=${encodeURIComponent(id)}`)
+            .then(res => res.text())
+            .then(result => {
+                if (result === "duplicate") {
+                    resultDiv.textContent = "❌ 중복입니다.";
+                    resultDiv.style.color = "red";
+                } else {
+                    resultDiv.textContent = "✅ 사용 가능합니다.";
+                    resultDiv.style.color = "green";
+                }
+            })
+            .catch(error => {
+                console.error("중복 확인 중 오류 발생:", error);
+                resultDiv.textContent = "서버 오류가 발생했습니다.";
+                resultDiv.style.color = "gray";
+            });
+    }
+
+    function checkPasswordMatch() {
+        const pw = document.getElementById('pwInput').value;
+        const pwConfirm = document.getElementById('pwConfirmInput').value;
+        const resultDiv = document.getElementById('pwCheckResult');
+
+        if (!pw || !pwConfirm) {
+            resultDiv.textContent = "";
+            return;
+        }
+
+        if (pw === pwConfirm) {
+            resultDiv.textContent = "✅ 비밀번호가 일치합니다.";
+            resultDiv.style.color = "green";
+        } else {
+            resultDiv.textContent = "❌ 비밀번호가 일치하지 않습니다.";
+            resultDiv.style.color = "red";
+        }
+    }
+
+    document.addEventListener("DOMContentLoaded", function () {
+        document.getElementById('pwInput').addEventListener('input', checkPasswordMatch);
+        document.getElementById('pwConfirmInput').addEventListener('input', checkPasswordMatch);
+    });
+</script>
+
+    <script>
+        function showPrivacyPopup() {
+        const checkbox = document.getElementById("terms");
+        if (checkbox.checked) {
+        const messages = [
+        "입력하신 개인정보는 회원가입 및 서비스 제공을 위해 수집되며, 동의 없이 제공되지 않습니다.",
+        "회원가입 시 수집되는 개인정보는 서비스 제공과 본인 확인을 위해 사용되며, 제3자에게 제공되지 않습니다.",
+        "성명, 연락처 등 개인정보는 회원관리 및 서비스 이용을 위해 수집되며, 동의 없이 외부에 제공되지 않습니다.",
+        "귀하의 개인정보는 본 서비스 운영을 위한 목적으로만 사용되며, 법적 근거 없이 외부로 유출되지 않습니다.",
+        "개인정보는 회원 식별, 서비스 제공 및 고객 응대를 위해 수집되며, 동의 없이 다른 용도로 사용되지 않습니다.",
+        "회원가입을 위해 수집된 개인정보는 안전하게 관리되며, 동의 없이 제3자에게 공유되지 않습니다.",
+        "수집된 개인정보는 서비스 이용에 필요한 최소한의 정보이며, 동의 없이는 처리되지 않습니다."
+        ];
+
+            const fullMessage = messages.join("\n\n"); // ✅ 문장 사이에 줄바꿈 두 번
+            alert(fullMessage);
+
+        }
+    }
+
+        function showAgreementPopup() {
+            const checkbox = document.getElementById("agreement");
+            if (checkbox.checked) {
+                const messages = [
+                    "본 서비스 이용을 위해 약관에 동의하셔야 하며, 동의하지 않을 경우 회원가입이 제한됩니다.",
+                    "서비스 이용 시 적용되는 약관에 동의하셔야 하며, 동의하지 않으면 서비스 이용이 불가능합니다.",
+                    "이용약관은 서비스 제공 및 사용자 보호를 위한 기준이며, 동의하지 않으면 가입이 제한됩니다.",
+                    "회원가입 전 이용약관을 반드시 확인하시고, 동의하셔야 정상적인 서비스 이용이 가능합니다.",
+                    "서비스 이용을 위한 기본 약관에 동의하셔야 하며, 미동의 시 회원가입이 진행되지 않습니다.",
+                    "이용약관은 서비스 운영의 기준이며, 동의하지 않으면 회원가입 및 이용이 제한될 수 있습니다.",
+                    "서비스 이용 시 발생할 수 있는 책임과 권리를 규정한 약관에 동의하셔야 가입이 가능합니다."
+                ];
+                const fullMessage = messages.join("\n\n");
+                alert(fullMessage);
+            }
+        }
+
+    </script>
+
+</body>
+</html>
