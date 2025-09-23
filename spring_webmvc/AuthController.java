@@ -1,56 +1,112 @@
-package com.ohgiraffers.auth.controller;
+package com.hulahoopblue.blue.controller;
 
-import com.ohgiraffers.auth.model.dto.LoginDTO;
-import com.ohgiraffers.auth.model.service.AuthService;
-import com.ohgiraffers.member.model.dto.MemberDTO;
+import com.hulahoopblue.blue.config.KakaoAPIConfig;
+import com.hulahoopblue.blue.model.dto.LoginDTO;
+import com.hulahoopblue.blue.model.service.AuthService;
+import com.hulahoopblue.blue.model.dto.MemberDTO;
+import com.hulahoopblue.blue.model.service.KakaoService;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @Controller
-@RequestMapping("/auth")
+@RequestMapping("/")
 public class AuthController {
 
+    private final KakaoAPIConfig kakaoAPIConfig;
+    private final KakaoService kakaoService;
     private final AuthService authService;
 
-    public AuthController(AuthService authService) {
+    public AuthController(KakaoAPIConfig kakaoAPIConfig, KakaoService kakaoService, AuthService authService) {
+        this.kakaoAPIConfig = kakaoAPIConfig;
+        this.kakaoService = kakaoService;
         this.authService = authService;
     }
 
-    // 로그인 페이지 (GET)
+    // 로그인 페이지 - static/index.html 사용
     @GetMapping("/login")
+
     public String loginPage() {
-        return "login/Login";  // templates/login/Login.html
+        return "forward:/index.html";  // static/index.html 보여줌
     }
 
-    // 로그인 처리 (POST)
+    // 로그인 처리
     @PostMapping("/login")
     public String login(LoginDTO loginDTO, HttpSession session) {
         MemberDTO member = authService.login(loginDTO.getId(), loginDTO.getPw());
 
         if (member != null) {
-            // 세션에 로그인 정보 저장
             session.setAttribute("loginMember", member);
-
-            // 세션 유지시간 30분 설정
-            session.setMaxInactiveInterval(1 * 60);
-
-            // 세션 유지시간을 세션에 저장 (main 페이지에서 꺼내 사용)
+            session.setMaxInactiveInterval(30 * 60);  // 30분 유지
             session.setAttribute("sessionTimeout", session.getMaxInactiveInterval());
-
-            return "redirect:/main";
+            return "redirect:/blueApplication";
         }
 
-        // 로그인 실패 시 ?error를 붙여 로그인 페이지로 리다이렉트
-        return "redirect:/auth/login?error";
+        return "redirect:/login?error"; // 실패 시 index.html 로 돌아감
     }
 
-    // 로그아웃 처리 (GET)
+    // ✅ 로그인 상태 확인 API
+    @GetMapping("/session-check")
+    @ResponseBody
+    public Map<String, Object> checkSession(HttpSession session) {
+        Map<String, Object> result = new HashMap<>();
+        MemberDTO loginMember = (MemberDTO) session.getAttribute("loginMember");
+
+        result.put("loggedIn", loginMember != null);
+        if (loginMember != null) {
+            result.put("name", loginMember.getNm());
+        }
+
+        return result;
+    }
+
+
+    // 로그아웃 처리
     @GetMapping("/logout")
-    public String logout(HttpSession session) {
-        session.invalidate();
-        return "redirect:/auth/login";
+    public String logout(HttpServletRequest request, HttpServletResponse response) {
+        HttpSession session = request.getSession(false);
+        if (session != null) {
+            System.out.println("로그아웃 직전 loginMember: " + session.getAttribute("loginMember"));
+            session.removeAttribute("loginMember");
+            session.invalidate();
+            System.out.println("세션 무효화 완료");
+        }
+
+        Cookie cookie = new Cookie("JSESSIONID", null);
+        cookie.setPath("/");
+        cookie.setMaxAge(0);
+        response.addCookie(cookie);
+
+        return "redirect:/";
+
+    }
+
+
+    // 채팅 페이지
+    @GetMapping("/blueApplication")
+    public String chatDesign(HttpSession session, Model model) {
+        MemberDTO loginMember = (MemberDTO) session.getAttribute("loginMember");
+
+        if (loginMember == null) {
+            return "redirect:/";
+        }
+
+        Integer remainingTime = (Integer) session.getAttribute("sessionTimeout");
+
+        model.addAttribute("kakaoApikey", kakaoAPIConfig.getKakaoApiKey());
+        model.addAttribute("loginMember", loginMember);
+        model.addAttribute("remainingTime", remainingTime);
+
+        return "/blueApplication";
     }
 }
