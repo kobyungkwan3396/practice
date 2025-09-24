@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>준비중입니다</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            background: linear-gradient(135deg, #fdfbfb, #ebedee);
+            font-family: 'Segoe UI', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: space-between;
+            width: 80%;
+            max-width: 1000px;
+            background-color: white;
+            padding: 50px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        .text-box {
+            flex: 1;
+            text-align: center;
+        }
+
+        .main-text {
+            font-size: 52px;
+            font-weight: 800;
+            color: #5E0F7B;
+            letter-spacing: 2px;
+            text-shadow: 2px 2px 6px rgba(94, 15, 123, 0.3);
+            animation: slideIn 1.2s ease-out;
+        }
+
+        .sub-text {
+            font-size: 28px;
+            font-weight: 500;
+            color: #4269E2;
+            margin-top: 20px;
+            animation: fadeIn 2s ease-in-out;
+        }
+
+        .image-box {
+            flex: 1;
+            text-align: center;
+        }
+
+        .image-box img {
+            max-width: 300px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        }
+
+        @keyframes slideIn {
+            from { transform: translateY(-30px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+                padding: 30px;
+            }
+            .main-text {
+                font-size: 36px;
+            }
+            .sub-text {
+                font-size: 22px;
+            }
+            .image-box img {
+                max-width: 200px;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="text-box">
+        <h1 class="main-text">🚧 준비중입니다</h1>
+        <h2 class="sub-text">곧 만나요 💙</h2>
+    </div>
+    <div class="image-box">
+        <img src="/img/pororo.png" alt="뽀로로">
+    </div>
+</div>
+</body>
+</html>
